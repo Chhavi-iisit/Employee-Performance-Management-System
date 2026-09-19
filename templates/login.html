@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AppraiseX | Employee Performance Management</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body class="login-page">
+<header class="gov-header">
+  <div class="brand"><div class="brand-mark">AX</div><div><strong>AppraiseX</strong><span>Employee Performance Management System</span></div></div>
+  <div class="header-note">Institutional Portal</div>
+</header>
+<main class="login-wrap">
+  <section class="login-card">
+    <div class="section-kicker">SECURE SIGN-IN</div>
+    <h1>Employee Performance Portal</h1>
+    <p class="muted">Sign in to access appraisal, document verification, appeals and investigation services.</p>
+    <form id="loginForm">
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="username" required placeholder="Enter your registered email">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required placeholder="Enter your password">
+      <button class="primary-btn full" type="submit">Sign in</button>
+      <div id="loginMessage" class="form-message"></div>
+    </form><p class="auth-link"><a href="/register">Create a new employee account</a></p>
+  </section>
+  <aside class="login-info">
+    <h2>About the system</h2>
+    <p>AppraiseX provides a structured workflow for employee performance records and review.</p>
+    <ul><li>Employee document submission and verification</li><li>Manager appraisal review</li><li>Appeal and reconsideration workflow</li><li>Higher-authority investigation and audit trail</li></ul>
+  </aside>
+</main>
+<footer class="site-footer">AppraiseX · Internal Academic Project</footer>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async function(e){
+ e.preventDefault(); const msg=document.getElementById('loginMessage'); msg.textContent='Signing in...'; msg.className='form-message';
+ try{
+  const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email.value.trim(),password:password.value})});
+  const d=await r.json(); if(!r.ok||!d.success) throw new Error(d.message||'Login failed');
+  localStorage.setItem('user',JSON.stringify(d));
+  location.href=d.role==='employee'?'/employee-dashboard':d.role==='manager'?'/manager-dashboard':'/admin-dashboard';
+ }catch(err){msg.textContent=err.message;msg.className='form-message error';}
+});
+</script>
+</body></html>
